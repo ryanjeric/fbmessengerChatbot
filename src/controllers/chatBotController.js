@@ -153,7 +153,7 @@ function handleMessage(sender_psid, message) {
         if (err) {
             callSendAPI(sender_psid, `Error 1 - ${message.text}`)
         };
-        con.query(`SELECT * FROM order where orderId="${message.text}"`, function (err, result, fields) {
+        con.query('SELECT * FROM `order` where orderId="'+message.text+'"', function (err, result, fields) {
             if (err) {
                 callSendAPI(sender_psid, `Error 2 - ${message.text} - ${err}`)
             } else {
