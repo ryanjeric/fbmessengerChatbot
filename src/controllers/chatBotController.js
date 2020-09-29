@@ -158,7 +158,7 @@ function handleMessage(sender_psid, message) {
                 callSendAPI(sender_psid, `Error 2 - ${message.text} - ${err}`)
             } else {
                 //console.log(result);
-                callSendAPI(sender_psid, result)
+                callSendAPI(sender_psid, JSON.stringify(result))
             }
 
         });
