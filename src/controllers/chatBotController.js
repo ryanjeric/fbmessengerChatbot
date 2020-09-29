@@ -1,5 +1,6 @@
 require("dotenv").config();
 import request from "request"
+import mysql from "mysql"
 let postWebhook = (req, res) => {
     let body = req.body;
 
@@ -109,9 +110,9 @@ function firstTrait(nlp, name) {
     return nlp && nlp.entities && nlp.traits[name] && nlp.traits[name][0];
 }
 
-function handleMessage(sender_psid,message) {
+function handleMessage(sender_psid, message) {
     // check greeting is here and is confident
-    let entitiesArr = ["wit$greetings","wit$thanks","wit$bye"];
+    /* let entitiesArr = ["wit$greetings","wit$thanks","wit$bye"];
     let entityChosen = "";
 
     entitiesArr.forEach((name) => {
@@ -133,7 +134,7 @@ function handleMessage(sender_psid,message) {
         else if(entityChosen == "wit$bye"){
             callSendAPI(sender_psid,'Babye!');
         }
-    }
+    } */
     /* const greeting = firstTrait(message.nlp, 'wit$greetings');
     if (greeting && greeting.confidence > 0.8) {
         callSendAPI(sender_psid,'Hi there!');
@@ -141,6 +142,27 @@ function handleMessage(sender_psid,message) {
         // default logic
         callSendAPI(sender_psid,'default')
     } */
+    let con = mysql.createConnection({
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE,
+    });
+
+    con.connect(function (err) {
+        if (err) {
+            callSendAPI(sender_psid, "Error")
+        };
+        con.query(`SELECT * FROM order where orderId='${message.nlp}'`, function (err, result, fields) {
+            if (err) {
+                callSendAPI(sender_psid, "Error")
+            } else {
+                //console.log(result);
+                callSendAPI(sender_psid, result)
+            }
+
+        });
+    });
 }
 
 
@@ -168,7 +190,7 @@ function callSendAPI(sender_psid, response) {
         "recipient": {
             "id": sender_psid
         },
-        "message": {"text": response}
+        "message": { "text": response }
     }
 
     // Send the HTTP request to the Messenger Platform
