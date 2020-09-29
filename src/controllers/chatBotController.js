@@ -153,7 +153,7 @@ function handleMessage(sender_psid, message) {
         if (err) {
             callSendAPI(sender_psid, "Error")
         };
-        con.query(`SELECT * FROM order where orderId='${message.nlp}'`, function (err, result, fields) {
+        con.query(`SELECT * FROM order where orderId='${message.text}'`, function (err, result, fields) {
             if (err) {
                 callSendAPI(sender_psid, "Error")
             } else {
